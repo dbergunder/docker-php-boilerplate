@@ -1,0 +1,50 @@
+version: '3.7'
+
+services:
+  web:
+    build: ./docker/nginx
+    ports:
+     - "${WEB_PORT}:80"
+    volumes:
+     - ./app:/var/www/html
+     - ./logs/nginx:/var/log/nginx:cached
+    networks:
+     - app
+    depends_on:
+     - php
+
+  php:
+    environment:
+      COMPOSER_AUTH: ${COMPOSER_AUTH}
+      APP_ENV: ${APP_ENV}
+      APP_SECRET: ${APP_SECRET}
+    build:
+      context: ./docker/php
+      args:
+        TIMEZONE: ${TIMEZONE}
+    restart: on-failure
+    volumes:
+     - ./app:/var/www/html
+     - ./docker/php/log.conf:/usr/local/etc/php-fpm.z/zz-log.conf
+     - ./docker/php/php.conf:/usr/local/etc/php/conf.d/zz-conf.ini
+    ports:
+     - "9001:9001"
+    networks:
+     - app
+
+  redis:
+    image: redis:4-alpine
+    volumes:
+     - redis_data:/data
+     - ./docker/redis/redis.conf:/usr/local/etc/redis/redis.conf
+    ports:
+     - "6379:6379"
+    restart: always
+    networks:
+     - app
+
+networks:
+  app:
+
+volumes:
+  redis_data:
