@@ -15,13 +15,13 @@ services:
 
   php:
     environment:
-      COMPOSER_AUTH: ${COMPOSER_AUTH}
       APP_ENV: ${APP_ENV}
       APP_SECRET: ${APP_SECRET}
     build:
       context: ./docker/php
       args:
         TIMEZONE: ${TIMEZONE}
+        COMPOSER_AUTH: ${COMPOSER_AUTH}
     restart: on-failure
     volumes:
      - ./app:/var/www/html
