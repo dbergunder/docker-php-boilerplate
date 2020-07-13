@@ -27,6 +27,8 @@ services:
      - ./app:/var/www/html
      - ./docker/php/log.conf:/usr/local/etc/php-fpm.z/zz-log.conf
      - ./docker/php/php.conf:/usr/local/etc/php/conf.d/zz-conf.ini
+    command:
+     - /usr/local/etc/redis/redis.conf
     ports:
      - "9001:9001"
     networks:
